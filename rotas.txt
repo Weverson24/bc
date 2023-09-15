@@ -1,0 +1,28 @@
+//criando rotas
+
+const express = require("express")
+const app =express();
+const handlebars = require("express-handlebars")
+
+
+//CRIANDO ROTAS:
+app.get("/",(req,res) => {
+    res.sendfile(__dirname + "/html/index.html")
+})
+
+app.get("/sobre",(req,res) => {
+    res.sendfile(__dirname + "/html/sobre.html")
+})
+
+app.get("/blog",(req,res) => {
+    res.sendfile(__dirname + "/html/blog.html")
+})
+
+//CRIANDO UM PARAMETRO
+app.get("/ola/:cargo/:nome",(req,res) => {
+    res.send("<h1>Ola " + req.params.nome + "</h1>");
+})
+
+app.listen(8081,() => {
+    console.log("Servidor rodando!..")
+});
