@@ -2,7 +2,7 @@ const express = require("express");
 const app =express();
 const handlebars  = require("express-handlebars");
 const bodyParser = require('body-parser');
-const Sequelize = require("sequelize");
+const Post = require('./models/Post') 
 
 
 //config
@@ -18,21 +18,29 @@ const Sequelize = require("sequelize");
         app.use(bodyParser.urlencoded({extended: false}))
         app.use(bodyParser.json())
 
-
-    //conexão com mysql
-
-        const sequelize = new Sequelize('livro','root','1F@miliasempre',{
-            host:"localhost",
-            dialect:"mysql",
-        }); 
-
 //rotas
+
+app.get('/', (req,res) => {
+
+    Post.findAll().then((posts) =>{
+        res.render('home',{nome: "weverson",sobrenome:"martins"})
+    })
+})
+
 app.get('/cad',(req,res) =>{
     res.render('formulario')
 });
 
 app.post('/add',(req,res) => {
-    res.send('Seu nome:' + req.body.titulo + " e "+ req.body.conteudo)
+    Post.create({
+        titulo: req.body.titulo,
+        conteudo: req.body.conteudo
+    }).then(() => {
+        res.redirect('/')
+    }).catch((error) => {
+        res.send("Houve um problema  " + error)
+    })
+
 })
 
 
