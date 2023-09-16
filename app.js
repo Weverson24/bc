@@ -1,6 +1,8 @@
 const express = require("express");
 const app =express();
+
 const handlebars  = require("express-handlebars");
+
 const bodyParser = require('body-parser');
 const Post = require('./models/Post') 
 
@@ -20,27 +22,34 @@ const Post = require('./models/Post')
 
 //rotas
 
-app.get('/', (req,res) => {
-
-    Post.findAll().then((posts) =>{
-        res.render('home',{nome: "weverson",sobrenome:"martins"})
+app.get('/', function(req,res){
+    Post.findAll({order: [['id','DESC']]}).then(function(posts){
+        res.render('home',{'posts': posts})
     })
 })
 
-app.get('/cad',(req,res) =>{
+app.get('/cad',function(req,res){
     res.render('formulario')
 });
 
-app.post('/add',(req,res) => {
+app.post('/add',function(req,res){
     Post.create({
         titulo: req.body.titulo,
         conteudo: req.body.conteudo
-    }).then(() => {
+    }).then(function(){
         res.redirect('/')
-    }).catch((error) => {
+    }).catch(function(error){
         res.send("Houve um problema  " + error)
     })
 
+})
+
+app.get('/deletar/:id',function(req,res){
+    Post.destroy({where: {'id': req.params.id}}).then(function(){
+        res.send('Resposta deletada com sucesso!')
+    }).catch(function(error){
+        res.send("Algo deu errado " + error)
+    })
 })
 
 
